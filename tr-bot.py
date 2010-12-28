@@ -8,7 +8,7 @@ SERVER = 'chat.freenode.net' #server to connect to
 PORT = 8000 #port to connect to
 NICKNAME = 'tr-bot' #nickname to join with
 CHANNEL = '#27c3-Saal-1' #channel to join
-
+VERBOSE = 0
 IRC = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 #open a connection with the server
@@ -36,7 +36,8 @@ join(CHANNEL)
 while True:
     
     data = IRC.recv (1024)
-    print data
+    if VERBOSE:
+        print data
     if data.find('PING') != -1:
         IRC.send('PONG' + " " + data.split()[1] + '\r\n')
     message = unicode(data.split(':')[2])
