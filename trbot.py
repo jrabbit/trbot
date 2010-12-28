@@ -4,6 +4,7 @@ import sys
 
 import translate
 import googleajax
+from uselangdet import *
 
 SERVER = 'chat.freenode.net' #server to connect to
 PORT = 8000 #port to connect to
@@ -35,6 +36,15 @@ login(NICKNAME)
 for channel in CHANNELS:
     join(channel)
 
+def translate(message, lang1, lang2):
+    """minimize translation requests by diagnostically checking if message is english"""
+    if lang2 == 'en':
+        if isEnglish(message):
+            print 'skipped translation'
+            return message
+        else:
+            return googleajax.fixGoogleText(translate.fromAjax(message, lang1, lang2))
+
 #PING PONG
 while True:
     
@@ -54,6 +64,6 @@ while True:
             print data
         sender = data.split(':')[1].split('!')[0]
         if sys.argv[1] == '-de':
-            print '<' + sender + '> ' +  googleajax.fixGoogleText(translate.fromAjax(message, 'en', 'de'))
+            print '<' + sender + '> ' +  translate(message, 'en', 'de')
         if sys.argv[1] == '-en':
-            print '<' + sender + '> ' +  googleajax.fixGoogleText(translate.fromAjax(message, 'de', 'en'))
+            print '<' + sender + '> ' +  translate(message, 'de', 'en')
