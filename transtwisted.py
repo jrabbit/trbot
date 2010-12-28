@@ -74,7 +74,8 @@ class MyFirstIRCProtocol(irc.IRCClient):
 
 class MyFirstIRCFactory(protocol.ReconnectingClientFactory):
     protocol = MyFirstIRCProtocol
-    channels = {'##infotest': {'de' :'##infotest-de', 'en' :'##infotest-en'}}
+    #channels = {'##infotest': {'de' :'##infotest-de', 'en' :'##infotest-en'}}
+    channels = {'#27c3-Saal-1': {'en': '#27c3-Saal-1-en', 'de': '#27c3-Saal-1-de'}, '#27c3-Saal-2': {'en': '#27c3-Saal-2-en', 'de': '#27c3-Saal-2-de'}, '#27c3-Saal-3': {'en': '#27c3-Saal-3-en', 'de': '#27c3-Saal-3-de'}}
     
 
 if __name__ == '__main__':
