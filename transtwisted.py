@@ -33,7 +33,7 @@ def googleTranslate(text, languageFrom, languageTo):
     langpair='%s|%s'%(LANG.get(languageFrom.lower(),languageFrom),
                       LANG.get(languageTo.lower(),languageTo))
     params=urllib.urlencode( (('v',1.0),
-                       ('q',text.encode('utf-8')),
+                       ('q',text),
                        ('langpair',langpair),) )
     url=base_url+params
     d = getPage(url)
@@ -48,9 +48,10 @@ class MyFirstIRCProtocol(irc.IRCClient):
     # This is called once the server has acknowledged that we sent
     # both NICK and USER.
     def signedOn(self):
-        self.join(self.factory.channels)
-
-    # Obviously, called when a PRIVMSG is received.
+        for channel, subchannels in self.factory.channels.iteritems():
+            self.join(channel)
+            for subchannel in subchannels.itervalues():
+                self.join(subchannel)
     def privmsg(self, user, channel, message):
         if channel == '*': 
             return
@@ -60,12 +61,12 @@ class MyFirstIRCProtocol(irc.IRCClient):
         if channel == self.nickname:
             self.msg(nick, "please don't msg me directly, use the channel")
             return
+        output_de = self.factory.channels[channel]['de']
+        output_en = self.factory.channels[channel]['en']
         d = googleTranslate(message, 'de', 'en')
-        d.addCallback(self._send_it, fromuser=nick, channel=channel)
-        
+        d.addCallback(self._send_it, fromuser=nick, channel=output_en)
         e = googleTranslate(message, 'en', 'de')
-        e.addCallback(self._send_it, fromuser=nick, channel=channel)
-        
+        e.addCallback(self._send_it, fromuser=nick, channel=output_de)
     def _send_it(self, message, fromuser, channel):
         message = '%s> %s' % (fromuser, message.encode('utf-8'))
         self.msg(channel, message)
@@ -73,7 +74,8 @@ class MyFirstIRCProtocol(irc.IRCClient):
 
 class MyFirstIRCFactory(protocol.ReconnectingClientFactory):
     protocol = MyFirstIRCProtocol
-    channels = '##infotest'
+    channels = {'##infotest': {'de' :'##infotest-de', 'en' :'##infotest-en'}}
+    
 
 if __name__ == '__main__':
     # This runs the program in the foreground. We tell the reactor to connect
