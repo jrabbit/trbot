@@ -8,7 +8,7 @@ import googleajax
 SERVER = 'chat.freenode.net' #server to connect to
 PORT = 8000 #port to connect to
 NICKNAME = 'tr-bot' #nickname to join with
-CHANNEL = '#27c3-Saal-1' #channel to join
+CHANNELS = ['#27c3-Saal-1'] #channels to join
 VERBOSE = 0
 IRC = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -31,7 +31,8 @@ def login(nickname, username='user', password = None, realname='tr-bot', hostnam
 
 irc_conn()
 login(NICKNAME)
-join(CHANNEL)
+for channel in CHANNELS:
+    join(channel)
 
 #PING PONG
 while True:
@@ -39,6 +40,8 @@ while True:
     data = IRC.recv (1024)
     if VERBOSE:
         print data
+    if data.split(':')[-1] == 'End of /NAMES list.':
+        print "synced to channel"
     if data.find('PING') != -1:
         IRC.send('PONG' + " " + data.split()[1] + '\r\n')
     if data.split()[1] == 'PRIVMSG':
