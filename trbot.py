@@ -51,6 +51,3 @@ while True:
             print '<' + sender + '> ' +  googleajax.fixGoogleText(translate.fromAjax(message, 'en', 'de'))
         if sys.argv[1] == '-en':
             print '<' + sender + '> ' +  googleajax.fixGoogleText(translate.fromAjax(message, 'de', 'en'))
-    # for word in data.split():
-    #     if word in trigger_words:
-    #         IRC.send('PRIVMSG' + " " + CHANNEL + " :" + trigger_words[word] + '\r\n')
