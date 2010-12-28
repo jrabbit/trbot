@@ -36,7 +36,7 @@ login(NICKNAME)
 for channel in CHANNELS:
     join(channel)
 
-def translate(message, lang1, lang2):
+def check_english(message, lang1, lang2):
     """minimize translation requests by diagnostically checking if message is english"""
     if lang2 == 'en':
         if isEnglish(message):
@@ -64,6 +64,6 @@ while True:
             print data
         sender = data.split(':')[1].split('!')[0]
         if sys.argv[1] == '-de':
-            print '<' + sender + '> ' +  translate(message, 'en', 'de')
+            print '<' + sender + '> ' +  check_english(message, 'en', 'de')
         if sys.argv[1] == '-en':
-            print '<' + sender + '> ' +  translate(message, 'de', 'en')
+            print '<' + sender + '> ' +  check_english(message, 'de', 'en')
