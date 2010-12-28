@@ -11,7 +11,7 @@ PORT = 8000 #port to connect to
 NICKNAME = 'tr-bot' #nickname to join with
 # CHANNELS = ['#27c3-Saal-1'] #channels to join
 CHANNELS = ['#bots']
-VERBOSE = 1
+VERBOSE = 0
 IRC = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 #open a connection with the server
@@ -56,14 +56,12 @@ while True:
     if data.find('PING') != -1:
         IRC.send('PONG' + " " + data.split()[1] + '\r\n')
     if data.split()[1] == 'PRIVMSG':
-        try:
-            message = ':'.join(data.split(':')[2:]).decode('utf-8')
-        except Exception, e:
-            print e
-            print data.split(':')[2]
-            print data
+        message = ':'.join(data.split(':')[2:]).decode('utf-8')
+        print type(message)
+        print data.split(':')[2]
+        # print datas
         sender = data.split(':')[1].split('!')[0]
         if sys.argv[1] == '-de':
-            print '<' + sender + '> ' +  check_english(message, 'en', 'de')
+            print '<' + sender + '> ' +  googleajax.fixGoogleText(translate.fromAjax(message, 'en', 'de'))
         if sys.argv[1] == '-en':
-            print '<' + sender + '> ' +  check_english(message, 'de', 'en')
+            print '<' + sender + '> ' +  googleajax.fixGoogleText(translate.fromAjax(message, 'de', 'en'))
