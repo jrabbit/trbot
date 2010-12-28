@@ -53,6 +53,9 @@ class MyFirstIRCProtocol(irc.IRCClient):
         # a direct message, don't do anything.
         if channel != self.nickname and not message.startswith(self.nickname):
             return
+        self.ignoredusers = ['Nickserv', 'Chanserv']
+        if channel == self.nickname and user in ignored_users:
+            return
         # Strip off any addressing. 
         message = re.sub(
             r'^%s[.,>:;!?]*\s*' % re.escape(self.nickname), '', message)
@@ -93,6 +96,8 @@ class MyFirstIRCProtocol(irc.IRCClient):
             return f
         return errback
     
+    def command_trans(self, message):
+        pass
     def command_ping(self, rest):
         return 'Pong.'
     
