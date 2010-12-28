@@ -3,7 +3,7 @@ import string
 import sys
 
 import translate
-import google
+import googleajax
 
 SERVER = 'chat.freenode.net' #server to connect to
 PORT = 8000 #port to connect to
@@ -45,9 +45,9 @@ while True:
         message = data.split(':')[2].decode('utf-8')
         sender = data.split(':')[1].split('!')[0]
         if sys.argv[1] == '-de':
-            print '<' + sender + '> ' +  google.fixGoogleText(translate.fromAjax(message, 'en', 'de'))
+            print '<' + sender + '> ' +  googleajax.fixGoogleText(translate.fromAjax(message, 'en', 'de'))
         if sys.argv[1] == '-en':
-            print '<' + sender + '> ' +  google.fixGoogleText(translate.fromAjax(message, 'de', 'en'))
+            print '<' + sender + '> ' +  googleajax.fixGoogleText(translate.fromAjax(message, 'de', 'en'))
     # for word in data.split():
     #     if word in trigger_words:
     #         IRC.send('PRIVMSG' + " " + CHANNEL + " :" + trigger_words[word] + '\r\n')
