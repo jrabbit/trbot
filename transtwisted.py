@@ -13,7 +13,7 @@ import translate
 import googleajax
 
 HOST, PORT = 'irc.freenode.net', 6667
-
+VERBOSE = 1
 
 def googleTranslate(text, languageFrom, languageTo):
     """
@@ -52,14 +52,19 @@ class MyFirstIRCProtocol(irc.IRCClient):
 
     # Obviously, called when a PRIVMSG is received.
     def privmsg(self, user, channel, message):
+        if channel == '*': 
+            return
         nick, _, host = user.partition('!')
         if nick.lower() in ('nickserv', 'chanserv'):
             return # ignore nickserv and chanserv
         if channel == self.nickname:
             self.msg(nick, "please don't msg me directly, use the channel")
             return
-        d = googleTranslate(message, 'en', 'pt')
+        d = googleTranslate(message, 'de', 'en')
         d.addCallback(self._send_it, fromuser=nick, channel=channel)
+        
+        e = googleTranslate(message, 'en', 'de')
+        e.addCallback(self._send_it, fromuser=nick, channel=channel)
         
     def _send_it(self, message, fromuser, channel):
         message = '%s> %s' % (fromuser, message.encode('utf-8'))
@@ -77,7 +82,8 @@ if __name__ == '__main__':
     reactor.connectTCP(HOST, PORT, MyFirstIRCFactory())
     # Since we're running in the foreground anyway, show what's happening by
     # logging to stdout.
-    log.startLogging(sys.stdout)
+    if VERBOSE:
+        log.startLogging(sys.stdout)
     # And this starts the reactor running. This call blocks until everything is
     # done, because this runs the whole twisted mainloop.
     reactor.run()
